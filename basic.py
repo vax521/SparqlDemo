@@ -94,12 +94,71 @@ Query_Texas_Citys_popTotal_popMetro_regex = """
       }
       order by desc(?popTotal)
 """
-sparql.setQuery(Query_Texas_Citys_popTotal_popMetro_regex)
+# 否定逻辑
+# 返回不具备地铁的人口
+Query_Texas_Citys_popTotal_popMetro_not = """
+   PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dbp:<http://dbpedia.org/ontology/>
+      SELECT * WHERE {
+      ?city rdf:type <http://dbpedia.org/class/yago/WikicatCitiesInTexas>;
+      dbp:populationTotal ?popTotal.
+      optional { ?city dbp:populationMetro ?popMetro.}
+      filter(!bound(?popMetro))
+      }
+      order by desc(?popTotal)
+      limit 10
+"""
+# Union操作符
+# 只返回类型为“德克萨斯城市” 或 “加州城市”类型的城市。
+Query_Texas_Citys_popTotal_popMetro_union = """
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+      PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX dbp:<http://dbpedia.org/ontology/>
+      SELECT * WHERE {
+      ?city dbp:populationTotal ?popTotal;
+      rdfs:label ?name.
+      optional { ?city dbp:populationMetro ?popMetro.}
+      filter(?popTotal>50000 && lang(?name)="en")
+        {?city rdf:type <http://dbpedia.org/class/yago/WikicatCitiesInTexas>.} 
+       UNION 
+        {?city rdf:type <http://dbpedia.org/class/yago/CitiesInCalifornia>.}
+      }
+      order by desc(?popTotal)
+      limit 10
+"""
+# 命名图和GRAPH条款, 每个命名图由URI标识。
+# 此查询返回“德克萨斯州城市”类型的城市以及包含每个城市资源的图表。
+Query_Texas_graph = """
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT * WHERE { 
+    GRAPH ?g { 
+       ?city rdf:type <http://dbpedia.org/class/yago/WikicatCitiesInTexas>.
+    } 
+}
+"""
+# ask查询
+# 询问奥斯汀是德克萨斯州的城市
+Query_ask = """
+    PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    ASK WHERE {
+      ?city rdf:type
+       http://dbpedia.org/class/yago/WikicatCitiesInTexas>; 
+       dbp:populationTotal?popTotal; 
+       dbp:populationMetro?popMetro.
+    FILTER(?popTotal>600000 &&?popMetro<1800000)
+    }
+"""
+sparql.setQuery(Query_ask)
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
-# for result in results["results"]["bindings"]:
-#     print(result['city']['value'], '城市总人口：', result['popTotal']['value'], '地铁人口：', result['popMetro']['value'])
 for result in results["results"]["bindings"]:
-    print(result['city']['value'], '城市名称:', result['name']['value'])
+    print(result)
+# for result in results["results"]["bindings"]:
+#     print(result['city']['value'], '城市总人口：', result['popTotal']['value'])
+
+# for result in results["results"]["bindings"]:
+#     print(result['city']['value'], '城市名称:', result['name']['value'])
+
 
 
