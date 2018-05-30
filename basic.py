@@ -19,15 +19,15 @@ Query_Texas_Citys_popTotal = """
 # 查询德克萨斯州各个城市总人口以及地铁人口
 Query_Texas_Citys_popTotal_popMetro = """
  PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-      PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
-      PREFIX dbp:<http://dbpedia.org/ontology/>
+ PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+ PREFIX dbp:<http://dbpedia.org/ontology/>
       SELECT * WHERE {
       ?city rdf:type <http://dbpedia.org/class/yago/WikicatCitiesInTexas>;
       dbp:populationTotal ?popTotal;
       dbp:populationMetro ?popMetro.
       }
 """
-# optionalaa选项 注意dbp:populationTotal ?popTotal后面要加.。
+# optional选项 注意dbp:populationTotal ?popTotal后面要加.。
 Query_Texas_Citys_popTotal_popMetro_ifexited = """
  PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
@@ -127,6 +127,7 @@ PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
       order by desc(?popTotal)
       limit 10
 """
+
 # 命名图和GRAPH条款, 每个命名图由URI标识。
 # 此查询返回“德克萨斯州城市”类型的城市以及包含每个城市资源的图表。
 Query_Texas_graph = """
