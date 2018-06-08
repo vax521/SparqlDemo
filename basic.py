@@ -90,7 +90,7 @@ Query_Texas_Citys_popTotal_popMetro_regex = """
       rdfs:label ?name.
       optional { ?city dbp:populationMetro ?popMetro.}
       filter(?popTotal>50000 && lang(?name)="en" &&
-      regex(str(?name), "E"))
+      regex(str(?name), "El"))
       }
       order by desc(?popTotal)
 """
