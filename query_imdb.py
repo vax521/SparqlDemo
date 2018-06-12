@@ -1,8 +1,12 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
-
+# publication retrieval recommend system
 # 查询所有可用的p
 query_p = """
 SELECT DISTINCT ?p WHERE {?s ?p ?o}
+"""
+# 查询所有可用的s
+query_s = """
+SELECT DISTINCT ?s WHERE {?s ?p ?o} limit(10000)
 """
 
 # 查询由 Sofia Coppola 执导的电影
@@ -47,7 +51,7 @@ SELECT DISTINCT ?actorName WHERE {
 }
 """
 sparql = SPARQLWrapper("http://data.linkedmdb.org/sparql")
-sparql.setQuery(query_actor)
+sparql.setQuery(query_s)
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 
