@@ -1,6 +1,25 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-sparql = SPARQLWrapper("http://dbpedia.org/sparql/")
+sparql = SPARQLWrapper("http://data.linkedmdb.org/sparql")
+# sparql = SPARQLWrapper("http://data.linkedmdb.org/")
+
+query_recommend ="""
+  PREFIX m: <http://data.linkedmdb.org/resource/movie/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?filmTitle WHERE {
+  ?film rdfs:label ?filmTitle.
+  ?film m:director ?dir.
+  ?dir  m:director_name WHERE {
+    SELECT DISTINCT ?dirctor_name   WHERE {
+         ?film rdfs:label "Lost in Translation";
+               m:director ?dir.
+              ?dir  m:director_name ?dirctor_name.
+     }  
+  }.
+}
+"""
+
+
 Query_movies = """
    PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 SELECT * WHERE { 
@@ -49,7 +68,7 @@ SELECT * WHERE {
     } 
 }
 """
-sparql.setQuery(Query_movie_temp)
+sparql.setQuery(query_recommend)
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 

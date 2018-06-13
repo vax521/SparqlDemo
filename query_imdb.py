@@ -4,11 +4,30 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 query_p = """
 SELECT DISTINCT ?p WHERE {?s ?p ?o}
 """
+
 # 查询所有可用的s
 query_s = """
-SELECT DISTINCT ?s WHERE {?s ?p ?o} limit(10000)
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?s WHERE {
+                ?s rdfs:label ?o
+                } limit(10000)
 """
-
+# 查询名为"Lost in Translation"的电影导演,演员，上映年份
+query_movie_director_by_moviename ="""
+PREFIX m: <http://data.linkedmdb.org/resource/movie/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?dir_name ?actor_name ?writer_name ?language WHERE {
+  ?film rdfs:label "Lost in Translation";
+        m:director ?dir;
+        m:actor    ?actor;
+        m:writer   ?writer;
+        m:language ?language.
+        
+       ?dir  m:director_name ?dir_name.
+       ?actor m:actor_name   ?actor_name.
+       ?writer m:writer_name ?writer_name.
+}
+"""
 # 查询由 Sofia Coppola 执导的电影
 query_movie_dirBySofia = """
 PREFIX m: <http://data.linkedmdb.org/resource/movie/>
@@ -50,10 +69,17 @@ SELECT DISTINCT ?actorName WHERE {
   ?actor    m:actor_name ?actorName.
 }
 """
+
 sparql = SPARQLWrapper("http://data.linkedmdb.org/sparql")
-sparql.setQuery(query_s)
+sparql.setQuery(query_movie_director_by_moviename)
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
-
+# with open("./data/movie_p.csv", mode="a+", encoding="utf-8") as f:
+#     f.seek(0)
+#     f.truncate()
+#     for result in results["results"]["bindings"]:
+#         print(result)
+#         f.write(str(result)+"\n")
 for result in results["results"]["bindings"]:
     print(result)
+# print(results)
