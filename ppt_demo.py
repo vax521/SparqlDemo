@@ -1,5 +1,13 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 
+
+#查询所有的可用的RDF图
+Query_all_usable_g = """
+SELECT DISTINCT ?g WHERE {
+GRAPH ?g {?s ?p ?o}
+} LIMIT 1000
+"""
+
 # 查询
 Query_book_author = """
 PREFIX : <http://dbpedia.org/resource/>
@@ -102,15 +110,31 @@ WHERE {
     ?author rdf:type dbo:Writer.
     ?author dbo:notableWork ?work.
     ?work dbp:releaseDate ?date.
-} ORDER BY ?date
+} 
+GROUP BY ?author
+ORDER BY ?date
+LIMIT 100
+"""
+query ="""
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX dbo: <http://dbpedia.org/ontology/>
+PREFIX dbp: <http://dbpedia.org/property/>
+SELECT ?author ?work ?date
+WHERE {
+    ?author rdf:type dbo:Writer.
+    ?author dbo:notableWork ?work.
+    ?work dbp:releaseDate ?date.
+} 
+GROUP BY ?author
 LIMIT 100
 """
 
 sparql = SPARQLWrapper("http://dbpedia.org/sparql/")
-sparql.setQuery(query_author_date)
+sparql.setQuery(Query_all_usable_g)
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 # print(results)
-
+print(type(results))
 for result in results["results"]["bindings"]:
     print(result)

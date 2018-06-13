@@ -74,6 +74,7 @@ sparql = SPARQLWrapper("http://data.linkedmdb.org/sparql")
 sparql.setQuery(query_movie_director_by_moviename)
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
+
 # with open("./data/movie_p.csv", mode="a+", encoding="utf-8") as f:
 #     f.seek(0)
 #     f.truncate()

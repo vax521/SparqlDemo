@@ -5,20 +5,27 @@ sparql = SPARQLWrapper("http://data.linkedmdb.org/sparql")
 
 query_recommend ="""
   PREFIX m: <http://data.linkedmdb.org/resource/movie/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-SELECT ?filmTitle WHERE {
-  ?film rdfs:label ?filmTitle.
-  ?film m:director ?dir.
-  ?dir  m:director_name WHERE {
-    SELECT DISTINCT ?dirctor_name   WHERE {
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  PREFIX foaf:  <http://xmlns.com/foaf/0.1/>
+SELECT ?filmTitle ?director_name WHERE {
+   { SELECT ?director   WHERE {
          ?film rdfs:label "Lost in Translation";
-               m:director ?dir.
-              ?dir  m:director_name ?dirctor_name.
-     }  
-  }.
+               m:director ?director.
+     }
+  ?director  m:director_name ?director_name
+  ?film rdfs:label ?filmTitle.
 }
 """
-
+query_recommend_also ="""
+  PREFIX m: <http://data.linkedmdb.org/resource/movie/>
+  PREFIX owl: <http://www.w3.org/2002/07/owl#>
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?movie WHERE {
+         ?film rdfs:label "Lost in Translation";
+               owl:sameAs ?movie.
+     }
+}
+"""
 
 Query_movies = """
    PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -42,7 +49,6 @@ Query_games = """
     SELECT * WHERE { 
      GRAPH ?g { 
        ?book rdf:type <http://dbpedia.org/ontology/Game>.
-
     } 
 }
 """
@@ -68,7 +74,16 @@ SELECT * WHERE {
     } 
 }
 """
-sparql.setQuery(query_recommend)
+query = """
+PREFIX m:<http://data.linkedmdb.org/resource/movie/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?filmTitle WHERE {
+  ?film rdfs:label ?filmTitle.
+  ?film m:director ?dir.
+  ?dir  m:director_name "Sofia Coppola".
+} LIMIT 3
+"""
+sparql.setQuery(query)
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 
