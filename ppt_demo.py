@@ -116,10 +116,6 @@ ORDER BY ?date
 LIMIT 100
 """
 query ="""
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX dbo: <http://dbpedia.org/ontology/>
-PREFIX dbp: <http://dbpedia.org/property/>
 SELECT ?author ?work ?date
 WHERE {
     ?author rdf:type dbo:Writer.
@@ -130,11 +126,38 @@ GROUP BY ?author
 LIMIT 100
 """
 
+# ppt上的例子 dian
+temp = """
+     SELECT COUNT(?movie) SAMPLE(?movie) ?label
+     WHERE {
+         dbr:A_Trip_to_the_Moon dct:subject ?o.
+         ?movie dct:subject ?o.
+         ?movie rdfs:label ?label.
+         FILTER(?movie != dbr:A_Trip_to_the_Moon).
+    }
+    GROUP BY ?movie ?label
+    ORDER BY DESC(COUNT(?movie))
+    LIMIT 3
+"""
+
+
 sparql = SPARQLWrapper("http://dbpedia.org/sparql/")
-sparql.setQuery(Query_all_usable_g)
+sparql.setQuery("""
+     SELECT ?label
+     WHERE {
+         dbr:A_Trip_to_the_Moon dct:subject ?o.
+         ?movie dct:subject ?o.
+         ?movie rdfs:label ?label.
+         FILTER(?movie != dbr:A_Trip_to_the_Moon).
+    }
+    GROUP BY ?movie ?label
+    ORDER BY DESC(COUNT(?movie))
+    LIMIT 3
+""")
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 # print(results)
 print(type(results))
+print(results)
 for result in results["results"]["bindings"]:
     print(result)

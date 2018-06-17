@@ -50,6 +50,7 @@ SELECT ?actorName ?filmTitle WHERE {
   ?actor m:actor_name ?actorName.
 }
 """
+
 # 查询列出 Sofia 和 Francis Ford Coppola 电影中共用的演员
 query_actor = """
 PREFIX m: <http://data.linkedmdb.org/resource/movie/>
@@ -70,8 +71,72 @@ SELECT DISTINCT ?actorName WHERE {
 }
 """
 
-sparql = SPARQLWrapper("http://data.linkedmdb.org/sparql")
-sparql.setQuery(query_movie_director_by_moviename)
+save = """
+ PREFIX m: <http://data.linkedmdb.org/resource/movie/>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX dc: <http://purl.org/dc/terms/>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        SELECT  ?dir_name ?actor_name ?writer_name ?date ?runtime ?page WHERE {
+          ?film rdfs:label 'Buffy the Vampire Slayer';
+                m:director ?dir;
+                m:actor    ?actor;
+                m:writer   ?writer;
+                dc:date    ?date;
+                m:country  ?country;
+                m:runtime  ?runtime;
+                foaf:page   ?page.
+                
+               ?dir  m:director_name ?dir_name.
+               ?actor m:actor_name   ?actor_name.
+               ?writer m:writer_name ?writer_name.
+        }
+"""
+temp = """
+        PREFIX m: <http://data.linkedmdb.org/resource/movie/>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX dc: <http://purl.org/dc/terms/>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        SELECT  ?dir_name ?actor_name ?writer_name ?date  ?page WHERE {
+          ?film rdfs:label 'Buffy the Vampire Slayer';
+                m:director ?dir;
+                m:actor    ?actor;
+                m:writer   ?writer;
+                dc:date    ?date;
+                
+        
+                foaf:page   ?page.
+                
+               ?dir  m:director_name ?dir_name.
+               ?actor m:actor_name   ?actor_name.
+               ?writer m:writer_name ?writer_name.
+        }
+"""
+
+# YES
+temp_rec = """
+     PREFIX dct: <http://purl.org/dc/terms/>
+     PREFIX film: <http://data.linkedmdb.org/resource/film/>
+
+     SELECT COUNT(?film) SAMPLE(?movie)
+     WHERE {
+         film:1 dct:subject ?o.
+         ?film  dct:subject ?o.
+         FILTER(?film != film:1)
+    }
+    GROUP BY ?film
+    ORDER BY DESC(COUNT(?film))
+"""
+
+sparql = SPARQLWrapper("http://data.linkedmdb.org/sparql/")
+sparql.setQuery("""
+        PREFIX m: <http://data.linkedmdb.org/resource/movie/>
+        PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        SELECT COUNT(?film) AS ?film_nums
+        WHERE {
+             ?film rdf:type m:film.
+        }
+        
+""")
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 
