@@ -1,5 +1,13 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 
+
+#查询所有的可用的RDF图
+Query_all_usable_g = """
+SELECT DISTINCT ?g WHERE {
+GRAPH ?g {?s ?p ?o}
+} LIMIT 1000
+"""
+
 # 查询
 Query_book_author = """
 PREFIX : <http://dbpedia.org/resource/>
@@ -102,15 +110,54 @@ WHERE {
     ?author rdf:type dbo:Writer.
     ?author dbo:notableWork ?work.
     ?work dbp:releaseDate ?date.
-} ORDER BY ?date
+} 
+GROUP BY ?author
+ORDER BY ?date
+LIMIT 100
+"""
+query ="""
+SELECT ?author ?work ?date
+WHERE {
+    ?author rdf:type dbo:Writer.
+    ?author dbo:notableWork ?work.
+    ?work dbp:releaseDate ?date.
+} 
+GROUP BY ?author
 LIMIT 100
 """
 
+# ppt上的例子 dian
+temp = """
+     SELECT COUNT(?movie) SAMPLE(?movie) ?label
+     WHERE {
+         dbr:A_Trip_to_the_Moon dct:subject ?o.
+         ?movie dct:subject ?o.
+         ?movie rdfs:label ?label.
+         FILTER(?movie != dbr:A_Trip_to_the_Moon).
+    }
+    GROUP BY ?movie ?label
+    ORDER BY DESC(COUNT(?movie))
+    LIMIT 3
+"""
+
+
 sparql = SPARQLWrapper("http://dbpedia.org/sparql/")
-sparql.setQuery(query_author_date)
+sparql.setQuery("""
+     SELECT ?label
+     WHERE {
+         dbr:A_Trip_to_the_Moon dct:subject ?o.
+         ?movie dct:subject ?o.
+         ?movie rdfs:label ?label.
+         FILTER(?movie != dbr:A_Trip_to_the_Moon).
+    }
+    GROUP BY ?movie ?label
+    ORDER BY DESC(COUNT(?movie))
+    LIMIT 3
+""")
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 # print(results)
-
+print(type(results))
+print(results)
 for result in results["results"]["bindings"]:
     print(result)

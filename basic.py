@@ -1,6 +1,12 @@
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 sparql = SPARQLWrapper("http://dbpedia.org/sparql/")
+
+# 查询所有可用的p
+query_p = """
+SELECT DISTINCT ?p WHERE {?s ?p ?o} LIMIT(100)
+"""
+
 Query_Texas_Citys = """PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
    SELECT * WHERE {
     ?city rdf:type <http://dbpedia.org/class/yago/WikicatCitiesInTexas>
@@ -203,17 +209,18 @@ construct_rdf_Austin = '''
     FILTER(?popTotal> 500000 && langmatches(lang(?name),"EN"))
 }
 '''
-sparql.setQuery(construct_rdf_Austin)
+sparql.setQuery(query_p)
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 
 # print('德克萨斯州是否存在总人口超过60万的城市，而城市人口少于1,800,000:', results['boolean'])
 
-for result in results["results"]["bindings"]:
-    print('S:', result['s'], ',P:', result['p'], ',O:', result['o'])
+# for result in results["results"]["bindings"]:
+#     print('S:', result['s'], ',P:', result['p'], ',O:', result['o'])
 
 # for result in results["results"]["bindings"]:
 #     print(result['city']['value'], '城市名称:', result['name']['value'])
 
-
+for result in results['results']['bindings']:
+    print(result)
 
