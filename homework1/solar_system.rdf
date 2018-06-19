@@ -1,0 +1,88 @@
+@prefix ns1: <http://example.org/relation/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://example.org/entity/Jupiter> a ns1:planet ;
+    ns1:distance_to_the_sun 5.2e+00 ;
+    ns1:planet <http://example.org/entity/sun> ;
+    ns1:quality 3.1794e+02 ;
+    ns1:radius 7194 ;
+    ns1:revolution_period "11.8a" ;
+    ns1:rotation_period "9.5h" .
+
+<http://example.org/entity/Mars> a ns1:planet ;
+    ns1:distance_to_the_sun 1.524e+00 ;
+    ns1:planet <http://example.org/entity/sun> ;
+    ns1:quality 1.1e-01 ;
+    ns1:radius 3397 ;
+    ns1:revolution_period "1.9a" ;
+    ns1:rotation_period "24.5h" .
+
+<http://example.org/entity/Mercury> a ns1:planet ;
+    ns1:distance_to_the_sun 3.870989e-01 ;
+    ns1:planet <http://example.org/entity/sun> ;
+    ns1:quality 5e-02 ;
+    ns1:radius 2440 ;
+    ns1:revolution_period "87.9d" ;
+    ns1:rotation_period "58.646d" .
+
+<http://example.org/entity/Moon> a ns1:satellite ;
+    ns1:distance_to_the_sun 1 ;
+    ns1:quality 1.25e-02 ;
+    ns1:radius 1738 ;
+    ns1:revolution_period "27.32d" ;
+    ns1:rotation_period "27.32d" ;
+    ns1:satellite <http://example.org/entity/Earth> .
+
+<http://example.org/entity/Neptune> a ns1:planet ;
+    ns1:distance_to_the_sun 3.013e+01 ;
+    ns1:planet <http://example.org/entity/sun> ;
+    ns1:quality 1.722e+01 ;
+    ns1:radius 49532 ;
+    ns1:revolution_period "164.8a" ;
+    ns1:rotation_period "18h" .
+
+<http://example.org/entity/Pluto> a ns1:Dwarf_planet ;
+    ns1:distance_to_the_sun 40 ;
+    ns1:planet <http://example.org/entity/sun> ;
+    ns1:quality 8e-01 ;
+    ns1:radius 1150 ;
+    ns1:revolution_period "248a" ;
+    ns1:rotation_period "6.3d" .
+
+<http://example.org/entity/Saturn> a ns1:planet ;
+    ns1:distance_to_the_sun 9.54e+00 ;
+    ns1:planet <http://example.org/entity/sun> ;
+    ns1:quality 9.518e+01 ;
+    ns1:radius 60330 ;
+    ns1:revolution_period "29.5a" ;
+    ns1:rotation_period "10h" .
+
+<http://example.org/entity/Uranus> a ns1:planet ;
+    ns1:distance_to_the_sun 1.918e+01 ;
+    ns1:planet <http://example.org/entity/sun> ;
+    ns1:quality 1.463e+01 ;
+    ns1:radius 51118 ;
+    ns1:revolution_period "84.0a" ;
+    ns1:rotation_period "16h" .
+
+<http://example.org/entity/Venus> a ns1:planet ;
+    ns1:distance_to_the_sun 7.25e-01 ;
+    ns1:planet <http://example.org/entity/sun> ;
+    ns1:quality 8.2e-01 ;
+    ns1:radius 2440 ;
+    ns1:revolution_period 2.247e+02 ;
+    ns1:rotation_period 243 .
+
+<http://example.org/entity/Earth> a ns1:planet ;
+    ns1:distance_to_the_sun 1 ;
+    ns1:planet <http://example.org/entity/sun> ;
+    ns1:quality 1 ;
+    ns1:radius 6371 ;
+    ns1:revolution_period "365d" ;
+    ns1:rotation_period "24h" .
+
+<http://example.org/entity/sun> a ns1:stellar .
+
