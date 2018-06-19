@@ -26,7 +26,7 @@ g.add((linda, RDF.type, FOAF.Person))
 g.add((linda, FOAF.name, Literal('Linda')))
 
 # 将rdf三元组存储为文件
-print(g.serialize('./data/person.nt', format='turtle'))
+print(g.serialize('../data/person.nt', format='turtle'))
 
 
 # set方法

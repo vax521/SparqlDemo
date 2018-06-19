@@ -209,7 +209,7 @@ construct_rdf_Austin = '''
     FILTER(?popTotal> 500000 && langmatches(lang(?name),"EN"))
 }
 '''
-sparql.setQuery(query_p)
+sparql.setQuery(Query_desc_Austin)
 sparql.setReturnFormat(JSON)
 results = sparql.query().convert()
 
